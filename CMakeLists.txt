@@ -56,7 +56,7 @@ endif()
 add_library(analysis_core STATIC
     src/RunPaths.cpp
 )
-target_include_directories(analysis_core PUBLIC include)
+target_include_directories(analysis_core PUBLIC src)
 target_link_libraries(analysis_core PUBLIC analysis_options)
 
 function(add_analysis_executable target source)

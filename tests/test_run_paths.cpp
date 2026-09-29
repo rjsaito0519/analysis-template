@@ -1,4 +1,4 @@
-#include "analysis/RunPaths.hpp"
+#include "RunPaths.hpp"
 
 #include <filesystem>
 #include <stdexcept>

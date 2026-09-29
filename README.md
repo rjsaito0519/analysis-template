@@ -6,7 +6,6 @@ C++17、CERN ROOT、Pythonを使う解析のためのシンプルなテンプレ
 
 ```text
 src/                C++の解析プログラムと共有実装
-include/            C++の共有ヘッダー
 scripts/            ビルド補助とPythonスクリプト
 tests/              C++の小さなテスト
 data/               入力データやそのシンボリックリンク（Git管理外）
@@ -58,7 +57,7 @@ python3 scripts/plot_result.py \
 2. `CMakeLists.txt` に `add_analysis_executable(実行名 ソース)` を1行追加する。
 3. `bash scripts/build.sh` で再ビルドする。
 
-共有処理は `include/` と `src/` に置きます。規模が大きくなった場合にだけ、`src/analysis`、`src/calibration`などへ分割してください。
+共有処理も `src/` に置きます。規模が大きくなった場合にだけ、`include/`や`src/analysis`、`src/calibration`などへ分割してください。
 
 入力と出力はプロジェクト直下の `data / results` を使います。別の出力先が必要な場合は実行時引数で指定します。
 
