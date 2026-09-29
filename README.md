@@ -33,12 +33,20 @@ scratch/            一時ファイル（Git管理外）
 ```bash
 bash scripts/bootstrap.sh
 ${EDITOR:-vi} config/project.env
+bash scripts/check_environment.sh
 bash scripts/build.sh
 ctest --preset default
 python3 scripts/run_analysis.py 42 --entries 20000
 ```
 
 結果は `results/run00042/example_analysis.root` に作られます。入力なしで乱数からヒストグラムを生成するため、環境確認にも使えます。
+
+ビルドを最初からやり直す場合は、データや結果を残したままCMake生成物だけを削除できます。
+
+```bash
+bash scripts/clean.sh
+bash scripts/build.sh
+```
 
 較正側の例は次のように実行します。
 
@@ -64,7 +72,7 @@ plot-analysis-result results/run00042/example_analysis.root \
   --output results/run00042/example_analysis.png
 ```
 
-ROOT を含む環境を一から作る場合の出発点として `environment.yml` も入れています。
+ROOT を含む環境を一から作る場合の選択肢として `environment.yml` も入れています。既存の共有計算機環境やローカルROOTがある場合、condaを使う必要はありません。
 
 ```bash
 conda env create -f environment.yml
@@ -82,7 +90,20 @@ python3 -m pip install -e '.[dev]'
 
 ## パス設定
 
-`config/project.env` は各マシン専用で Git には入りません。利用可能な変数は次の4つです。
+`config/project.env` はデータ置き場、`config/site.sh` はソフトウェア環境を設定します。どちらも各マシン専用でGitには入りません。
+
+`config/site.sh` では、必要ならROOTの `thisroot.sh`、共有計算機の `module load`、Garfield++のパスを設定します。何も設定しなければ、現在のシェルで有効な `root-config` を利用し、そのインストール先をCMakeへ明示的に渡します。これにより、複数のROOTがある環境で別バージョンを誤検出しにくくしています。
+
+Garfield++を使う解析では、そのGarfield++が現在選択中のROOTと同じROOTインストールおよび互換ABIでビルドされている必要があります。特定バージョンには固定せず、必要な解析だけ次のように有効化します。
+
+```bash
+cmake --preset default \
+  -DROOT_DIR="$(root-config --prefix)/cmake" \
+  -DANALYSIS_WITH_GARFIELD=ON
+cmake --build --preset default --parallel
+```
+
+`config/project.env` で利用可能な変数は次の4つです。
 
 - `ANALYSIS_DATA_DIR`: 入力データ置き場
 - `ANALYSIS_OUTPUT_DIR`: 永続的な解析結果

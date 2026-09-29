@@ -6,13 +6,39 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ANALYSIS_BUILD_TESTS "Build unit tests" ON)
 option(ANALYSIS_ENABLE_SANITIZERS "Enable AddressSanitizer and UBSan" OFF)
+option(ANALYSIS_WITH_GARFIELD "Link executables with Garfield++" OFF)
 
 find_package(ROOT 6.24 REQUIRED COMPONENTS Core RIO Tree Hist Graf Gpad ROOTDataFrame)
+
+execute_process(
+    COMMAND git rev-parse --short=12 HEAD
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    OUTPUT_VARIABLE ANALYSIS_GIT_COMMIT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+if(NOT ANALYSIS_GIT_COMMIT)
+    set(ANALYSIS_GIT_COMMIT "unknown")
+endif()
+execute_process(
+    COMMAND git status --porcelain --untracked-files=no
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    OUTPUT_VARIABLE ANALYSIS_GIT_STATUS
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+if(ANALYSIS_GIT_STATUS)
+    set(ANALYSIS_GIT_DIRTY "true")
+else()
+    set(ANALYSIS_GIT_DIRTY "false")
+endif()
 
 add_library(analysis_options INTERFACE)
 target_compile_features(analysis_options INTERFACE cxx_std_17)
 target_compile_definitions(analysis_options INTERFACE
     ANALYSIS_VERSION="${PROJECT_VERSION}"
+    ANALYSIS_GIT_COMMIT="${ANALYSIS_GIT_COMMIT}"
+    ANALYSIS_GIT_DIRTY="${ANALYSIS_GIT_DIRTY}"
 )
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(analysis_options INTERFACE
@@ -26,6 +52,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
             -fsanitize=address,undefined
         )
     endif()
+endif()
+
+if(ANALYSIS_WITH_GARFIELD)
+    find_package(Garfield REQUIRED)
+    target_link_libraries(analysis_options INTERFACE Garfield::Garfield)
+    target_compile_definitions(analysis_options INTERFACE ANALYSIS_HAS_GARFIELD=1)
 endif()
 
 add_library(analysis_core STATIC

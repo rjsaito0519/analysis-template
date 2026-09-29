@@ -84,12 +84,16 @@ int main(int argc, char** argv) {
         const std::string run = analysis::run_tag(options.run_number);
         TNamed run_metadata("run", run.c_str());
         TNamed analysis_version("analysis_version", ANALYSIS_VERSION);
+        TNamed git_commit("git_commit", ANALYSIS_GIT_COMMIT);
+        TNamed git_dirty("git_dirty", ANALYSIS_GIT_DIRTY);
         TNamed root_version("root_version", gROOT->GetVersion());
         TNamed description("description", "Replace the random loop with your event loop");
         output.cd();
         histogram.Write();
         run_metadata.Write();
         analysis_version.Write();
+        git_commit.Write();
+        git_dirty.Write();
         root_version.Write();
         description.Write();
         output.Close();

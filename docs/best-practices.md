@@ -17,6 +17,8 @@ This boundary avoids maintaining the same physics selection independently in C++
 - Treat compiler warnings as feedback. Turn warnings into errors in CI only after third-party headers are isolated.
 - Run sanitizer builds on small samples during development; optimized production jobs remain separate.
 - Keep build files under `.build*`; never mix generated files with source.
+- Specify minimum supported versions, not one machine's exact versions. Record the exact versions used in each production output.
+- Resolve ROOT from the active `root-config` and pass that prefix to CMake explicitly when several ROOT installations coexist.
 
 ## ROOT
 
@@ -26,6 +28,7 @@ This boundary avoids maintaining the same physics selection independently in C++
 - Check every input and output `TFile`, tree, and required branch before the event loop. Fail with the run number and path in the message.
 - Store analysis version, ROOT version, inputs, tree name, and essential cuts alongside results.
 - Keep plotting separate from event processing. Batch jobs should not depend on a display server.
+- A ROOT-dependent library such as Garfield++ must be built against the same ROOT installation and a compatible compiler ABI used by the analysis.
 
 ## Python
 
@@ -41,5 +44,5 @@ This boundary avoids maintaining the same physics selection independently in C++
 - Version small calibration/configuration inputs. Record the exact file or content hash used by a job.
 - Keep one immutable output directory per run and analysis revision for production. Do not silently overwrite approved results.
 - A production manifest should include Git commit, dirty-tree flag, command line, environment name, timestamps, input checksums or dataset IDs, and event counts.
+- Keep machine and cluster setup in an ignored `config/site.sh`; entry-point scripts should source it instead of depending invisibly on interactive shell startup files.
 - Test pure calculations without ROOT where possible; add a tiny synthetic ROOT fixture for integration tests.
-

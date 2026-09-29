@@ -53,12 +53,16 @@ int main(int argc, char** argv) {
         TNamed source_tree("source_tree", tree_name.c_str());
         TNamed source_branch("source_branch", branch_name.c_str());
         TNamed analysis_version("analysis_version", ANALYSIS_VERSION);
+        TNamed git_commit("git_commit", ANALYSIS_GIT_COMMIT);
+        TNamed git_dirty("git_dirty", ANALYSIS_GIT_DIRTY);
         TNamed root_version("root_version", gROOT->GetVersion());
         run.Write();
         source.Write();
         source_tree.Write();
         source_branch.Write();
         analysis_version.Write();
+        git_commit.Write();
+        git_dirty.Write();
         root_version.Write();
         output.Close();
 
