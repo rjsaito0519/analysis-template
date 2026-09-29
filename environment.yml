@@ -1,0 +1,17 @@
+name: my-analysis
+channels:
+  - conda-forge
+dependencies:
+  - root>=6.30
+  - cmake>=3.22
+  - ninja
+  - cxx-compiler
+  - python>=3.11
+  - pip
+  - awkward>=2
+  - matplotlib>=3.7
+  - numpy>=1.24
+  - pytest>=7
+  - ruff>=0.4
+  - uproot>=5
+

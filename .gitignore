@@ -1,0 +1,27 @@
+# Build products
+.build*/
+CMakeUserPresets.json
+
+# Local configuration (copy from the example)
+config/project.env
+
+# Data and generated results
+data/*
+!data/.gitkeep
+results/*
+!results/.gitkeep
+scratch/*
+!scratch/.gitkeep
+*.root
+
+# Python / editor / OS files
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.vscode/
+.idea/
+.DS_Store
+*~
