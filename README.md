@@ -22,13 +22,15 @@ GitHub公式の説明: [Creating a repository from a template](https://docs.gith
 
 ### 2. 利用する環境へcloneして初期化する
 
-作成したリポジトリのSSH URLをコピーし、解析に使用する環境でcloneします。
+作成したリポジトリの **Code** からSSHまたはHTTPSのURLをコピーし、解析に使用する環境でcloneします。
 
 ```bash
-git clone git@github.com:YOUR_ACCOUNT/YOUR_REPOSITORY.git
+git clone REPOSITORY_URL
 cd YOUR_REPOSITORY
 ./init-project.sh PROJECT_NAME
 ```
+
+たとえばSSHを使う場合、`REPOSITORY_URL`は`git@github.com:YOUR_ACCOUNT/YOUR_REPOSITORY.git`のようになります。
 
 `PROJECT_NAME`はCMakeのproject名にも使われるため、英字で始まり、英数字・`_`・`-`だけを使います。
 
@@ -57,7 +59,7 @@ docs/               解析テーマごとに整理する文書
 
 ## 必要なもの
 
-- Linux または WSL
+- Bashが使えるUnix系環境（Linux、macOS、WSLなど）
 - CMake 3.22 以上
 - C++17 対応コンパイラ
 - CERN ROOT 6.24 以上（`thisroot.sh` 適用済み、または `ROOT_DIR` 設定済み）

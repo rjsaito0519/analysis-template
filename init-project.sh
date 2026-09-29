@@ -28,10 +28,46 @@ if [[ -n "${auto_yes}" && "${auto_yes}" != "--yes" ]]; then
     exit 2
 fi
 
-if [[ ! -f CMakeLists.txt || ! -f README.md || ! -f AGENTS.md ]]; then
-    echo "error: run this script from an intact analysis-template repository" >&2
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "error: python3 is required to initialize the project" >&2
     exit 1
 fi
+
+for required_file in \
+    CMakeLists.txt \
+    README.md \
+    AGENTS.md \
+    src/example_analysis.cpp \
+    src/rdf_analysis.cpp \
+    scripts/run_analysis.py \
+    scripts/plot_result.py
+do
+    if [[ ! -f "${required_file}" ]]; then
+        echo "error: expected template file is missing: ${required_file}" >&2
+        echo "The repository may already be initialized or modified; no files were changed." >&2
+        exit 1
+    fi
+done
+
+python3 - <<'PY'
+from pathlib import Path
+
+cmake = Path("CMakeLists.txt").read_text(encoding="utf-8")
+expected_lines = (
+    "project(MyAnalysis VERSION 0.1.0 LANGUAGES CXX)",
+    "add_analysis_executable(example_analysis src/example_analysis.cpp)",
+    "add_analysis_executable(rdf_analysis src/rdf_analysis.cpp)",
+)
+
+missing = [line for line in expected_lines if cmake.count(line) != 1]
+if missing:
+    details = "\n  - ".join(missing)
+    raise SystemExit(
+        "error: CMakeLists.txt does not match the uninitialized template:\n"
+        f"  - {details}\n"
+        "The repository may already be initialized or modified; no files were changed."
+    )
+PY
 
 cat <<EOF
 This will initialize the repository as '${project_name}'.
@@ -58,8 +94,24 @@ if [[ "${auto_yes}" != "--yes" ]]; then
     esac
 fi
 
-sed -i -E "s/^project\(MyAnalysis /project(${project_name} /" CMakeLists.txt
-sed -i -E '/^add_analysis_executable\((example_analysis|rdf_analysis) /d' CMakeLists.txt
+python3 - "${project_name}" <<'PY'
+from pathlib import Path
+import sys
+
+project_name = sys.argv[1]
+path = Path("CMakeLists.txt")
+cmake = path.read_text(encoding="utf-8")
+cmake = cmake.replace(
+    "project(MyAnalysis VERSION 0.1.0 LANGUAGES CXX)",
+    f"project({project_name} VERSION 0.1.0 LANGUAGES CXX)",
+)
+for target in (
+    "add_analysis_executable(example_analysis src/example_analysis.cpp)\n",
+    "add_analysis_executable(rdf_analysis src/rdf_analysis.cpp)\n",
+):
+    cmake = cmake.replace(target, "")
+path.write_text(cmake, encoding="utf-8")
+PY
 
 rm -f \
     src/example_analysis.cpp \
@@ -78,7 +130,7 @@ C++17、CERN ROOT、Pythonを使う解析プロジェクトです。
 
 ## 必要なもの
 
-- Linux または WSL
+- Bashが使えるUnix系環境（Linux、macOS、WSLなど）
 - CMake 3.22 以上
 - C++17対応コンパイラ
 - CERN ROOT 6.24 以上
