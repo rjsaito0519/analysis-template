@@ -2,9 +2,6 @@
 .build*/
 CMakeUserPresets.json
 
-# Local configuration (copy from the example)
-config/project.env
-
 # Data and generated results
 data/*
 !data/.gitkeep

@@ -4,33 +4,12 @@
 from __future__ import annotations
 
 import argparse
-import os
 from pathlib import Path
 import subprocess
 import sys
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-
-
-def load_env_file(path: Path) -> dict[str, str]:
-    environment = os.environ.copy()
-    if not path.exists():
-        return environment
-
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#"):
-            continue
-        if line.startswith("export "):
-            line = line[7:]
-        key, separator, value = line.partition("=")
-        if not separator:
-            raise ValueError(f"invalid environment line: {raw_line}")
-        value = value.strip().strip('"').strip("'")
-        value = value.replace("${PWD}", str(PROJECT_ROOT))
-        environment[key.strip()] = value
-    return environment
 
 
 def main() -> int:
@@ -49,11 +28,9 @@ def main() -> int:
     if args.output is not None:
         command.extend(["--output", str(args.output.resolve())])
 
-    environment = load_env_file(PROJECT_ROOT / "config" / "project.env")
     completed = subprocess.run(
         command,
         cwd=PROJECT_ROOT,
-        env=environment,
         check=False,
     )
     return completed.returncode

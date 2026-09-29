@@ -1,34 +1,19 @@
 #include "analysis/RunPaths.hpp"
 
-#include <cstdlib>
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
 
-namespace {
-
-std::filesystem::path env_or_default(
-    const char* name,
-    const std::filesystem::path& fallback
-) {
-    const char* value = std::getenv(name);
-    return (value != nullptr && value[0] != '\0')
-        ? std::filesystem::path(value)
-        : fallback;
-}
-
-}  // namespace
-
 namespace analysis {
 
-ProjectPaths ProjectPaths::from_environment(
+ProjectPaths ProjectPaths::in_project(
     const std::filesystem::path& project_root
 ) {
     return {
-        env_or_default("ANALYSIS_DATA_DIR", project_root / "data"),
-        env_or_default("ANALYSIS_OUTPUT_DIR", project_root / "results"),
-        env_or_default("ANALYSIS_PARAM_DIR", project_root / "param"),
-        env_or_default("ANALYSIS_SCRATCH_DIR", project_root / "scratch")
+        project_root / "data",
+        project_root / "results",
+        project_root / "param",
+        project_root / "scratch"
     };
 }
 
@@ -50,4 +35,3 @@ std::filesystem::path run_output_dir(
 }
 
 }  // namespace analysis
-

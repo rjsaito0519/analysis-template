@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 
         const int run_number = std::stoi(argv[1]);
         const double value = std::stod(argv[2]);
-        const auto paths = analysis::ProjectPaths::from_environment(
+        const auto paths = analysis::ProjectPaths::in_project(
             std::filesystem::current_path()
         );
         const auto output_file = analysis::run_output_dir(paths.output, run_number)
@@ -39,4 +39,3 @@ int main(int argc, char** argv) {
         return 1;
     }
 }
-

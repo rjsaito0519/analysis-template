@@ -12,7 +12,7 @@ struct ProjectPaths {
     std::filesystem::path param;
     std::filesystem::path scratch;
 
-    static ProjectPaths from_environment(const std::filesystem::path& project_root);
+    static ProjectPaths in_project(const std::filesystem::path& project_root);
 };
 
 std::string run_tag(int run_number);
@@ -24,4 +24,3 @@ std::filesystem::path run_output_dir(
 }  // namespace analysis
 
 #endif
-

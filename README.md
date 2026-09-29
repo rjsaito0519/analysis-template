@@ -11,8 +11,7 @@ common/include/     解析・較正で共有するヘッダー
 common/src/         解析・較正で共有する実装
 python/src/         再利用可能なPythonパッケージ（srcレイアウト）
 python/tests/       Python側の単体テスト
-config/             ローカル環境設定のひな形
-scripts/            初期化、ビルド、実行の補助
+scripts/            ビルド、実行の補助
 tests/              ROOTファイルを必要としない小さなテスト
 data/               入力データやそのシンボリックリンク（Git管理外）
 results/            ROOT/PDF/画像などの成果物（Git管理外）
@@ -30,8 +29,6 @@ scratch/            一時ファイル（Git管理外）
 ## 最初の実行
 
 ```bash
-bash scripts/bootstrap.sh
-${EDITOR:-vi} config/project.env
 bash scripts/build.sh
 ctest --preset default
 python3 scripts/run_analysis.py 42 --entries 20000
@@ -49,7 +46,6 @@ bash scripts/build.sh
 較正側の例は次のように実行します。
 
 ```bash
-source config/project.env
 ./.build/bin/example_calibration 42 1.025
 ```
 
@@ -76,16 +72,7 @@ PYTHONPATH=python/src python3 -m pytest
 
 共有処理は `common/include/analysis/` と `common/src/` に置き、実行ファイルの `main` は引数処理と処理手順の組み立てに留めると保守しやすくなります。
 
-## パス設定
-
-`config/project.env` は各マシン専用でGitには入りません。利用可能な変数は次の4つです。
-
-- `ANALYSIS_DATA_DIR`: 入力データ置き場
-- `ANALYSIS_OUTPUT_DIR`: 永続的な解析結果
-- `ANALYSIS_PARAM_DIR`: パラメータ・較正定数
-- `ANALYSIS_SCRATCH_DIR`: 大きな一時ファイル
-
-C++ 側はこの環境変数を読み、未設定ならプロジェクト直下の `data / results / param / scratch` を使います。実行時引数で出力先を明示すれば、その値が最優先です。
+入力、出力、パラメータ、一時ファイルはそれぞれプロジェクト直下の `data / results / param / scratch` を使います。別の出力先が必要な場合は実行時引数で指定します。
 
 ## 実データへつなぐときの目安
 

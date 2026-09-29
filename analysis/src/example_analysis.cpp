@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
         TH1::AddDirectory(kFALSE);  // Make histogram ownership explicit.
 
         const auto project_root = std::filesystem::current_path();
-        const auto paths = analysis::ProjectPaths::from_environment(project_root);
+        const auto paths = analysis::ProjectPaths::in_project(project_root);
         const auto output_file = options.output_file.empty()
             ? analysis::run_output_dir(paths.output, options.run_number)
                 / "example_analysis.root"
