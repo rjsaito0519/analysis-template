@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Plot the example ROOT output with uproot and matplotlib."""
 
 from __future__ import annotations

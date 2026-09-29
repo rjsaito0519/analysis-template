@@ -4,7 +4,6 @@ project(MyAnalysis VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(ANALYSIS_BUILD_TESTS "Build unit tests" ON)
 option(ANALYSIS_ENABLE_SANITIZERS "Enable AddressSanitizer and UBSan" OFF)
 
 find_package(ROOT 6.24 REQUIRED COMPONENTS Core RIO Tree Hist Graf Gpad ROOTDataFrame)
@@ -53,16 +52,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     endif()
 endif()
 
-add_library(analysis_core STATIC
-    src/RunPaths.cpp
-)
-target_include_directories(analysis_core PUBLIC src)
-target_link_libraries(analysis_core PUBLIC analysis_options)
-
 function(add_analysis_executable target source)
     add_executable(${target} ${source})
     target_link_libraries(${target} PRIVATE
-        analysis_core
+        analysis_options
         ROOT::Core
         ROOT::RIO
         ROOT::Tree
@@ -80,10 +73,3 @@ endfunction()
 # from silently becoming build targets.
 add_analysis_executable(example_analysis src/example_analysis.cpp)
 add_analysis_executable(rdf_analysis src/rdf_analysis.cpp)
-
-if(ANALYSIS_BUILD_TESTS)
-    include(CTest)
-    add_executable(test_run_paths tests/test_run_paths.cpp)
-    target_link_libraries(test_run_paths PRIVATE analysis_core analysis_options)
-    add_test(NAME run_paths COMMAND test_run_paths)
-endif()

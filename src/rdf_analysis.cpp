@@ -1,5 +1,3 @@
-#include "RunPaths.hpp"
-
 #include <ROOT/RDataFrame.hxx>
 #include <ROOT/RDF/HistoModels.hxx>
 #include <TFile.h>
@@ -13,26 +11,20 @@
 
 int main(int argc, char** argv) {
     try {
-        if (argc != 6) {
+        if (argc != 5) {
             std::cerr << "Usage: " << argv[0]
-                      << " RUN_NUMBER INPUT.root TREE BRANCH OUTPUT.root\n";
+                      << " INPUT.root TREE BRANCH OUTPUT.root\n";
             return 2;
         }
 
-        const int run_number = std::stoi(argv[1]);
-        const std::string input_file = argv[2];
-        const std::string tree_name = argv[3];
-        const std::string branch_name = argv[4];
-        const std::filesystem::path output_file = argv[5];
-        if (run_number < 0) {
-            throw std::invalid_argument("run number must be non-negative");
-        }
+        const std::string input_file = argv[1];
+        const std::string tree_name = argv[2];
+        const std::string branch_name = argv[3];
+        const std::filesystem::path output_file = argv[4];
         if (!std::filesystem::is_regular_file(input_file)) {
             throw std::runtime_error("input file does not exist: " + input_file);
         }
 
-        // Enable only after confirming that all called analysis code is thread-safe.
-        // ROOT::EnableImplicitMT();
         ROOT::RDataFrame dataframe(tree_name, input_file);
         auto histogram = dataframe.Histo1D(
             {"h_value", "Selected branch;value;events", 200, -100.0, 100.0},
@@ -47,8 +39,7 @@ int main(int argc, char** argv) {
         if (output.IsZombie()) {
             throw std::runtime_error("cannot create output file: " + output_file.string());
         }
-        histogram->Write();  // Triggers one lazy event loop for all booked results.
-        TNamed run("run", analysis::run_tag(run_number).c_str());
+        histogram->Write();
         TNamed source("source_file", input_file.c_str());
         TNamed source_tree("source_tree", tree_name.c_str());
         TNamed source_branch("source_branch", branch_name.c_str());
@@ -56,7 +47,6 @@ int main(int argc, char** argv) {
         TNamed git_commit("git_commit", ANALYSIS_GIT_COMMIT);
         TNamed git_dirty("git_dirty", ANALYSIS_GIT_DIRTY);
         TNamed root_version("root_version", gROOT->GetVersion());
-        run.Write();
         source.Write();
         source_tree.Write();
         source_branch.Write();
@@ -73,3 +63,4 @@ int main(int argc, char** argv) {
         return 1;
     }
 }
+

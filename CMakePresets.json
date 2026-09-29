@@ -6,8 +6,7 @@
       "displayName": "Default release build",
       "binaryDir": "${sourceDir}/.build",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "ANALYSIS_BUILD_TESTS": "ON"
+        "CMAKE_BUILD_TYPE": "Release"
       }
     },
     {
@@ -23,12 +22,5 @@
   "buildPresets": [
     { "name": "default", "configurePreset": "default" },
     { "name": "debug", "configurePreset": "debug" }
-  ],
-  "testPresets": [
-    {
-      "name": "default",
-      "configurePreset": "default",
-      "output": { "outputOnFailure": true }
-    }
   ]
 }

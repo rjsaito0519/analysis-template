@@ -24,7 +24,7 @@ This boundary avoids maintaining the same physics selection independently in C++
 - Prefer `ROOT::RDataFrame` for new columnar analyses. Book all actions before reading their results so ROOT can execute them in one event loop.
 - Enable implicit multithreading only after verifying that custom callbacks and external libraries are thread-safe.
 - Make object lifetime explicit. ROOT 6 directory ownership can otherwise delete objects at surprising times; use stack objects or smart pointers and detach histograms when needed.
-- Check every input and output `TFile`, tree, and required branch before the event loop. Fail with the run number and path in the message.
+- Check every input and output `TFile`, tree, and required branch before the event loop. Include the relevant path in error messages.
 - Store analysis version, ROOT version, inputs, tree name, and essential cuts alongside results.
 - Keep plotting separate from event processing. Batch jobs should not depend on a display server.
 
@@ -39,6 +39,5 @@ This boundary avoids maintaining the same physics selection independently in C++
 
 - Never commit raw data, generated ROOT files, credentials, or machine-specific absolute paths.
 - Version small calibration/configuration inputs. Record the exact file or content hash used by a job.
-- Keep one immutable output directory per run and analysis revision for production. Do not silently overwrite approved results.
+- Do not silently overwrite approved production results.
 - A production manifest should include Git commit, dirty-tree flag, command line, environment name, timestamps, input checksums or dataset IDs, and event counts.
-- Test pure calculations without ROOT where possible; add a tiny synthetic ROOT fixture for integration tests.

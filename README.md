@@ -7,7 +7,6 @@ C++17、CERN ROOT、Pythonを使う解析のためのシンプルなテンプレ
 ```text
 src/                C++の解析プログラムと共有実装
 scripts/            Pythonスクリプト
-tests/              C++の小さなテスト
 data/               入力データやそのシンボリックリンク（Git管理外）
 results/            ROOT/PDF/画像などの成果物（Git管理外）
 ```
@@ -24,11 +23,10 @@ results/            ROOT/PDF/画像などの成果物（Git管理外）
 
 ```bash
 ./build.sh
-ctest --preset default
-python3 scripts/run_analysis.py 42 --entries 20000
+python3 scripts/run_analysis.py --entries 20000
 ```
 
-結果は `results/run00042/example_analysis.root` に作られます。入力なしで乱数からヒストグラムを生成するため、環境確認にも使えます。
+結果は `results/example_analysis.root` に作られます。入力なしで乱数からヒストグラムを生成するため、環境確認にも使えます。
 
 ビルドを最初からやり直す場合は、データや結果を残したままCMake生成物だけを削除できます。
 
@@ -40,15 +38,15 @@ python3 scripts/run_analysis.py 42 --entries 20000
 実 ROOT ファイルの TTree を `RDataFrame` で読む例もあります。
 
 ```bash
-./.build/bin/rdf_analysis 42 input.root tree_name branch_name results/run00042/rdf.root
+./.build/bin/rdf_analysis input.root tree_name branch_name results/rdf.root
 ```
 
 Pythonは現在のシェルで利用できる `python3` とインストール済みパッケージをそのまま使います。
 
 ```bash
 python3 scripts/plot_result.py \
-  results/run00042/example_analysis.root \
-  --output results/run00042/example_analysis.png
+  results/example_analysis.root \
+  --output results/example_analysis.png
 ```
 
 ## 新しい解析を追加する
@@ -64,7 +62,6 @@ python3 scripts/plot_result.py \
 ## 実データへつなぐときの目安
 
 - 実験のデコーダやDSTライブラリが大きくなったら、`analysis_core`とは別のCMake targetにする。
-- run ごとの入力解決は `RunPaths` に集約し、個々の解析に絶対パスを書かない。
 - 大きな ROOT ファイルは Git に入れず、`data/` から共有ストレージへリンクする。
 - 解析条件、入力ファイル、Git commit、ROOT version を出力 ROOT の metadata に残す。
 
