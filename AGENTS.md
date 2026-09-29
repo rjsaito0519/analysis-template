@@ -1,6 +1,6 @@
 # Repository guide for AI assistants
 
-This repository is a small, reusable template for C++17, CERN ROOT, and Python analyses.
+This repository uses C++17, CERN ROOT, and Python for data analysis.
 Keep it general: do not assume a specific experiment, detector, run-number scheme, storage layout, or host environment.
 
 ## Start here
