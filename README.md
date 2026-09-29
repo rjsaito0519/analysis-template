@@ -5,17 +5,12 @@ C++17、CERN ROOT、Pythonを使う解析のためのシンプルなテンプレ
 ## 構成
 
 ```text
-analysis/src/       物理解析プログラム（1ファイル = 1実行ファイルを推奨）
-calibration/src/    較正プログラム
-common/include/     解析・較正で共有するヘッダー
-common/src/         解析・較正で共有する実装
-python/src/         再利用可能なPythonパッケージ（srcレイアウト）
-python/tests/       Python側の単体テスト
-scripts/            ビルド、実行の補助
-tests/              ROOTファイルを必要としない小さなテスト
+src/                C++の解析プログラムと共有実装
+include/            C++の共有ヘッダー
+scripts/            ビルド補助とPythonスクリプト
+tests/              C++の小さなテスト
 data/               入力データやそのシンボリックリンク（Git管理外）
 results/            ROOT/PDF/画像などの成果物（Git管理外）
-scratch/            一時ファイル（Git管理外）
 ```
 
 ## 必要なもの
@@ -43,12 +38,6 @@ bash scripts/clean.sh
 bash scripts/build.sh
 ```
 
-較正側の例は次のように実行します。
-
-```bash
-./.build/bin/example_calibration 42 1.025
-```
-
 実 ROOT ファイルの TTree を `RDataFrame` で読む例もあります。
 
 ```bash
@@ -58,27 +47,25 @@ bash scripts/build.sh
 Pythonは現在のシェルで利用できる `python3` とインストール済みパッケージをそのまま使います。
 
 ```bash
-python3 python/src/my_analysis/plot_result.py \
+python3 scripts/plot_result.py \
   results/run00042/example_analysis.root \
   --output results/run00042/example_analysis.png
-PYTHONPATH=python/src python3 -m pytest
 ```
 
 ## 新しい解析を追加する
 
-1. `analysis/src/example_analysis.cpp` をコピーして解析を書く。
+1. `src/example_analysis.cpp` をコピーして解析を書く。
 2. `CMakeLists.txt` に `add_analysis_executable(実行名 ソース)` を1行追加する。
 3. `bash scripts/build.sh` で再ビルドする。
 
-共有処理は `common/include/analysis/` と `common/src/` に置き、実行ファイルの `main` は引数処理と処理手順の組み立てに留めると保守しやすくなります。
+共有処理は `include/` と `src/` に置きます。規模が大きくなった場合にだけ、`src/analysis`、`src/calibration`などへ分割してください。
 
-入力、出力、パラメータ、一時ファイルはそれぞれプロジェクト直下の `data / results / param / scratch` を使います。別の出力先が必要な場合は実行時引数で指定します。
+入力と出力はプロジェクト直下の `data / results` を使います。別の出力先が必要な場合は実行時引数で指定します。
 
 ## 実データへつなぐときの目安
 
-- 実験のデコーダや DST ライブラリは `analysis_core` とは別の CMake target にする。
+- 実験のデコーダやDSTライブラリが大きくなったら、`analysis_core`とは別のCMake targetにする。
 - run ごとの入力解決は `RunPaths` に集約し、個々の解析に絶対パスを書かない。
-- 較正定数はソースコードではなく `param/` の版管理可能なテキストへ置く。
 - 大きな ROOT ファイルは Git に入れず、`data/` から共有ストレージへリンクする。
 - 解析条件、入力ファイル、Git commit、ROOT version を出力 ROOT の metadata に残す。
 

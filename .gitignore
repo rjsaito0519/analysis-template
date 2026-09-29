@@ -7,8 +7,6 @@ data/*
 !data/.gitkeep
 results/*
 !results/.gitkeep
-scratch/*
-!scratch/.gitkeep
 *.root
 
 # Python / editor / OS files

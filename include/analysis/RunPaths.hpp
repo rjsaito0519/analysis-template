@@ -9,8 +9,6 @@ namespace analysis {
 struct ProjectPaths {
     std::filesystem::path data;
     std::filesystem::path output;
-    std::filesystem::path param;
-    std::filesystem::path scratch;
 
     static ProjectPaths in_project(const std::filesystem::path& project_root);
 };

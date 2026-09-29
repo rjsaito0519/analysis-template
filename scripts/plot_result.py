@@ -1,10 +1,13 @@
-"""Read the example ROOT output without starting a PyROOT process."""
+"""Plot the example ROOT output with uproot and matplotlib."""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import uproot
 
@@ -33,4 +36,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

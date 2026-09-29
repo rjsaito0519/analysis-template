@@ -11,9 +11,7 @@ ProjectPaths ProjectPaths::in_project(
 ) {
     return {
         project_root / "data",
-        project_root / "results",
-        project_root / "param",
-        project_root / "scratch"
+        project_root / "results"
     };
 }
 

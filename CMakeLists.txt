@@ -54,9 +54,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 add_library(analysis_core STATIC
-    common/src/RunPaths.cpp
+    src/RunPaths.cpp
 )
-target_include_directories(analysis_core PUBLIC common/include)
+target_include_directories(analysis_core PUBLIC include)
 target_link_libraries(analysis_core PUBLIC analysis_options)
 
 function(add_analysis_executable target source)
@@ -78,9 +78,8 @@ endfunction()
 
 # Add new programs explicitly here. This keeps accidental/unfinished sources
 # from silently becoming build targets.
-add_analysis_executable(example_analysis analysis/src/example_analysis.cpp)
-add_analysis_executable(rdf_analysis analysis/src/rdf_analysis.cpp)
-add_analysis_executable(example_calibration calibration/src/example_calibration.cpp)
+add_analysis_executable(example_analysis src/example_analysis.cpp)
+add_analysis_executable(rdf_analysis src/rdf_analysis.cpp)
 
 if(ANALYSIS_BUILD_TESTS)
     include(CTest)

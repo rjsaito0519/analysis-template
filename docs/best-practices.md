@@ -30,8 +30,7 @@ This boundary avoids maintaining the same physics selection independently in C++
 
 ## Python
 
-- Importable code lives under `python/src/my_analysis`; one-off entry points are thin wrappers.
-- Put dependencies and tool configuration in `pyproject.toml`. Install editable during development with `pip install -e '.[dev]'`.
+- Keep small Python helpers directly under `scripts/`. Create a package only when code is genuinely shared by several scripts or projects.
 - Call subprocesses with an argument list and `shell=False` (the default), not a shell command string.
 - Use `pathlib.Path`, context managers for ROOT/uproot files, type hints, and small pure functions.
 - Use uproot/awkward for portable inspection and plotting when PyROOT behavior is not required; use PyROOT/RDataFrame when sharing ROOT-native transformations matters.
