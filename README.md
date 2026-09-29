@@ -20,9 +20,9 @@ C++17、CERN ROOT、Pythonを使う解析のためのシンプルなテンプレ
 
 GitHub公式の説明: [Creating a repository from a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
 
-### 2. WSLへcloneして初期化する
+### 2. 利用する環境へcloneして初期化する
 
-作成したリポジトリのSSH URLをコピーし、WSL上でcloneします。
+作成したリポジトリのSSH URLをコピーし、解析に使用する環境でcloneします。
 
 ```bash
 git clone git@github.com:YOUR_ACCOUNT/YOUR_REPOSITORY.git
