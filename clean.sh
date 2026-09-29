@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Only remove out-of-source CMake products. Data and results are preserved.
 for build_dir in "${project_dir}/.build" "${project_dir}/.build-debug"; do

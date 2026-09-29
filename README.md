@@ -6,7 +6,7 @@ C++17、CERN ROOT、Pythonを使う解析のためのシンプルなテンプレ
 
 ```text
 src/                C++の解析プログラムと共有実装
-scripts/            ビルド補助とPythonスクリプト
+scripts/            Pythonスクリプト
 tests/              C++の小さなテスト
 data/               入力データやそのシンボリックリンク（Git管理外）
 results/            ROOT/PDF/画像などの成果物（Git管理外）
@@ -23,7 +23,7 @@ results/            ROOT/PDF/画像などの成果物（Git管理外）
 ## 最初の実行
 
 ```bash
-bash scripts/build.sh
+./build.sh
 ctest --preset default
 python3 scripts/run_analysis.py 42 --entries 20000
 ```
@@ -33,8 +33,8 @@ python3 scripts/run_analysis.py 42 --entries 20000
 ビルドを最初からやり直す場合は、データや結果を残したままCMake生成物だけを削除できます。
 
 ```bash
-bash scripts/clean.sh
-bash scripts/build.sh
+./clean.sh
+./build.sh
 ```
 
 実 ROOT ファイルの TTree を `RDataFrame` で読む例もあります。
@@ -55,7 +55,7 @@ python3 scripts/plot_result.py \
 
 1. `src/example_analysis.cpp` をコピーして解析を書く。
 2. `CMakeLists.txt` に `add_analysis_executable(実行名 ソース)` を1行追加する。
-3. `bash scripts/build.sh` で再ビルドする。
+3. `./build.sh` で再ビルドする。
 
 共有処理も `src/` に置きます。規模が大きくなった場合にだけ、`include/`や`src/analysis`、`src/calibration`などへ分割してください。
 

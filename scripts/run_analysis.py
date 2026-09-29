@@ -22,7 +22,7 @@ def main() -> int:
 
     executable = PROJECT_ROOT / ".build" / "bin" / args.target
     if not executable.is_file():
-        parser.error(f"{executable} does not exist; run scripts/build.sh first")
+        parser.error(f"{executable} does not exist; run build.sh first")
 
     command = [str(executable), str(args.run), "--entries", str(args.entries)]
     if args.output is not None:
