@@ -65,4 +65,4 @@ python3 scripts/plot_result.py \
 - 大きな ROOT ファイルは Git に入れず、`data/` から共有ストレージへリンクする。
 - 解析条件、入力ファイル、Git commit、ROOT version を出力 ROOT の metadata に残す。
 
-設計上の簡単な指針は [docs/best-practices.md](docs/best-practices.md) にまとめています。
+詳しい構成と設計上の指針は [docs/README.md](docs/README.md) にまとめています。AIツール向けの共通ルールは [AGENTS.md](AGENTS.md) を入口にしています。
