@@ -13,11 +13,4 @@ else
     echo "config/project.env already exists; leaving it unchanged."
 fi
 
-if [[ ! -e config/site.sh ]]; then
-    cp config/site.sh.example config/site.sh
-    echo "Created config/site.sh; set ROOT/Garfield paths if needed."
-else
-    echo "config/site.sh already exists; leaving it unchanged."
-fi
-
 echo "Project directories are ready."

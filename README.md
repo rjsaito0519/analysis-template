@@ -1,7 +1,6 @@
-# ROOT analysis skeleton
+# Analysis template
 
-J-PARC の解析コードを想定した、C++17 + CERN ROOT の最小構成です。
-[JPARC2025E72](https://github.com/rjsaito0519/JPARC2025E72) の `analysis / calibration / common` 分離と CMake ベースのビルドを参考にしつつ、環境固有パスをコードに埋め込まない形に整理しています。
+C++17、CERN ROOT、Pythonを使う解析のためのシンプルなテンプレートです。
 
 ## 構成
 
@@ -33,7 +32,6 @@ scratch/            一時ファイル（Git管理外）
 ```bash
 bash scripts/bootstrap.sh
 ${EDITOR:-vi} config/project.env
-bash scripts/check_environment.sh
 bash scripts/build.sh
 ctest --preset default
 python3 scripts/run_analysis.py 42 --entries 20000
@@ -61,23 +59,13 @@ source config/project.env
 ./.build/bin/rdf_analysis 42 input.root tree_name branch_name results/run00042/rdf.root
 ```
 
-Python 側を使う場合は editable install にします。
+Pythonは現在のシェルで利用できる `python3` とインストール済みパッケージをそのまま使います。
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install -e '.[dev]'
-pytest
-plot-analysis-result results/run00042/example_analysis.root \
+python3 python/src/my_analysis/plot_result.py \
+  results/run00042/example_analysis.root \
   --output results/run00042/example_analysis.png
-```
-
-ROOT を含む環境を一から作る場合の選択肢として `environment.yml` も入れています。既存の共有計算機環境やローカルROOTがある場合、condaを使う必要はありません。
-
-```bash
-conda env create -f environment.yml
-conda activate my-analysis
-python3 -m pip install -e '.[dev]'
+PYTHONPATH=python/src python3 -m pytest
 ```
 
 ## 新しい解析を追加する
@@ -90,20 +78,7 @@ python3 -m pip install -e '.[dev]'
 
 ## パス設定
 
-`config/project.env` はデータ置き場、`config/site.sh` はソフトウェア環境を設定します。どちらも各マシン専用でGitには入りません。
-
-`config/site.sh` では、必要ならROOTの `thisroot.sh`、共有計算機の `module load`、Garfield++のパスを設定します。何も設定しなければ、現在のシェルで有効な `root-config` を利用し、そのインストール先をCMakeへ明示的に渡します。これにより、複数のROOTがある環境で別バージョンを誤検出しにくくしています。
-
-Garfield++を使う解析では、そのGarfield++が現在選択中のROOTと同じROOTインストールおよび互換ABIでビルドされている必要があります。特定バージョンには固定せず、必要な解析だけ次のように有効化します。
-
-```bash
-cmake --preset default \
-  -DROOT_DIR="$(root-config --prefix)/cmake" \
-  -DANALYSIS_WITH_GARFIELD=ON
-cmake --build --preset default --parallel
-```
-
-`config/project.env` で利用可能な変数は次の4つです。
+`config/project.env` は各マシン専用でGitには入りません。利用可能な変数は次の4つです。
 
 - `ANALYSIS_DATA_DIR`: 入力データ置き場
 - `ANALYSIS_OUTPUT_DIR`: 永続的な解析結果
@@ -120,11 +95,4 @@ C++ 側はこの環境変数を読み、未設定ならプロジェクト直下�
 - 大きな ROOT ファイルは Git に入れず、`data/` から共有ストレージへリンクする。
 - 解析条件、入力ファイル、Git commit、ROOT version を出力 ROOT の metadata に残す。
 
-設計判断と、C++/ROOT/Python それぞれの運用ルールは [docs/best-practices.md](docs/best-practices.md) にまとめています。
-
-## 参考元から意図的に変えた点
-
-- ソースの自動探索ではなく実行 target を明示し、未完成ファイルの混入を防止。
-- ホームディレクトリ等の絶対パスをヘッダーへコピーせず、環境変数と実行時引数で設定。
-- shell から組み立てた文字列を実行せず、Python の引数リストで安全にプロセス起動。
-- 最小テストと CMake Presets を最初から用意。
+設計上の簡単な指針は [docs/best-practices.md](docs/best-practices.md) にまとめています。

@@ -4,7 +4,6 @@ CMakeUserPresets.json
 
 # Local configuration (copy from the example)
 config/project.env
-config/site.sh
 
 # Data and generated results
 data/*
